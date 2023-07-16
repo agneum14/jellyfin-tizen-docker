@@ -16,12 +16,12 @@ RUN useradd -m jellyfin -s /bin/bash
 
 # Copy tizen-studio executable
 USER jellyfin
-# COPY ./web-cli_Tizen_Studio_4.6_ubuntu-64.bin /home/jellyfin
-RUN wget https://download.tizen.org/sdk/Installer/tizen-studio_4.6/web-cli_Tizen_Studio_4.6_ubuntu-64.bin -P /home/jellyfin
+# COPY ./web-cli_Tizen_Studio_5.1_ubuntu-64.bin /home/jellyfin
+RUN wget https://download.tizen.org/sdk/Installer/tizen-studio_5.1/web-cli_Tizen_Studio_5.1_ubuntu-64.bin -P /home/jellyfin
 
 # Execute tizen-studio executable
-RUN chmod a+x /home/jellyfin/web-cli_Tizen_Studio_4.6_ubuntu-64.bin
-RUN ./home/jellyfin/web-cli_Tizen_Studio_4.6_ubuntu-64.bin --accept-license /home/jellyfin/tizen-studio
+RUN chmod a+x /home/jellyfin/web-cli_Tizen_Studio_5.1_ubuntu-64.bin
+RUN ./home/jellyfin/web-cli_Tizen_Studio_5.1_ubuntu-64.bin --accept-license /home/jellyfin/tizen-studio
 
 # Add export path
 ENV PATH=${PATH}:/home/jellyfin/tizen-studio/tools/ide/bin:/home/jellyfin/tizen-studio/tools
@@ -48,13 +48,13 @@ RUN sed -i 's/\/home\/jellyfin\/tizen-studio-data\/keystore\/author\/Jellyfin.pw
 RUN sed -i 's/\/home\/jellyfin\/tizen-studio-data\/tools\/certificate-generator\/certificates\/distributor\/tizen-distributor-signer.pwd/tizenpkcs12passfordsigner/' /home/jellyfin/tizen-studio-data/profile/profiles.xml
 
 # Git clone apps
-RUN git clone https://github.com/jellyfin/jellyfin-web.git /home/jellyfin/jellyfin-web
+RUN git clone -b release-10.8.z --single-branch https://github.com/jellyfin/jellyfin-web.git /home/jellyfin/jellyfin-web
 RUN git clone https://github.com/jellyfin/jellyfin-tizen.git /home/jellyfin/jellyfin-tizen
 
 # Build Jellyfin Web
 WORKDIR /home/jellyfin/jellyfin-web
 RUN npm ci --no-audit
-RUN npm run build:production
+RUN npm run build:development
 
 # Build Jellyfin Tizen
 WORKDIR /home/jellyfin/jellyfin-tizen
